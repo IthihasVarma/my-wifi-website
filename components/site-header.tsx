@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { siteName } from "@/lib/site-data";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -27,7 +26,6 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
@@ -36,22 +34,24 @@ export function SiteHeader() {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
-          ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-emerald-900/5 border-b border-emerald-100/50" 
-          : "bg-white/80 backdrop-blur-md border-b border-transparent"
+          ? "bg-slate-950/95 backdrop-blur-xl border-b border-cyan-400/10 shadow-lg shadow-cyan-500/5" 
+          : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-3">
           <div className="relative">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-lg text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-emerald-500/40">
-              📶
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 text-lg text-white shadow-lg shadow-cyan-500/30 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-cyan-500/40">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+              </svg>
             </div>
             {/* Glow effect */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-50" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-purple-500 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-50" />
           </div>
-          <span className="text-base font-bold text-emerald-950 sm:text-lg">
-            {siteName}
+          <span className="text-base font-bold text-white sm:text-lg">
+            Neural<span className="text-gradient-neon">WiFi</span>
           </span>
         </Link>
 
@@ -65,22 +65,22 @@ export function SiteHeader() {
                 href={item.href}
                 className={`group relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   isActive
-                    ? "text-emerald-900"
-                    : "text-slate-600 hover:text-emerald-900"
+                    ? "text-cyan-400"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                {/* Active indicator */}
+                {/* Hover background */}
                 <span 
                   className={`absolute inset-0 rounded-full transition-all duration-300 ${
                     isActive 
-                      ? "bg-emerald-100" 
-                      : "bg-transparent group-hover:bg-emerald-50"
+                      ? "bg-cyan-400/10" 
+                      : "bg-transparent group-hover:bg-slate-800/50"
                   }`}
                 />
                 
-                {/* Hover underline effect */}
+                {/* Active indicator */}
                 <span 
-                  className={`absolute bottom-1 left-1/2 h-0.5 -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 ${
+                  className={`absolute bottom-1 left-1/2 h-0.5 -translate-x-1/2 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-300 ${
                     isActive ? "w-1/2" : "w-0 group-hover:w-1/2"
                   }`}
                 />
@@ -95,12 +95,14 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/speedtest"
-            className="group inline-flex items-center gap-2 rounded-full bg-[#0B3B2E] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all duration-300 hover:bg-emerald-900 hover:shadow-xl hover:-translate-y-0.5"
+            className="group btn-neon"
           >
-            <span>Test Speed</span>
-            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
+            <span className="flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Test Speed
+            </span>
           </Link>
         </div>
 
@@ -108,7 +110,7 @@ export function SiteHeader() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="relative rounded-full p-2 text-slate-600 transition-colors hover:bg-emerald-50 hover:text-emerald-900 md:hidden"
+          className="relative rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white md:hidden"
           aria-label="Toggle menu"
         >
           <div className="w-6 h-5 flex flex-col justify-between">
@@ -133,7 +135,7 @@ export function SiteHeader() {
 
       {/* Mobile Menu */}
       <div 
-        className={`overflow-hidden border-t border-emerald-100/50 bg-white/95 backdrop-blur-xl md:hidden transition-all duration-500 ${
+        className={`overflow-hidden border-t border-cyan-400/10 bg-slate-950/95 backdrop-blur-xl md:hidden transition-all duration-500 ${
           mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -146,12 +148,12 @@ export function SiteHeader() {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 ${
                   isActive
-                    ? "bg-emerald-100 text-emerald-900"
-                    : "text-slate-600 hover:bg-emerald-50 hover:text-emerald-900"
+                    ? "bg-cyan-400/10 text-cyan-400"
+                    : "text-slate-400 hover:bg-slate-800/50 hover:text-white"
                 }`}
               >
                 {isActive && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
                 )}
                 {item.label}
               </Link>
@@ -159,12 +161,12 @@ export function SiteHeader() {
           })}
           <Link
             href="/speedtest"
-            className="mt-4 flex items-center justify-center gap-2 rounded-full bg-[#0B3B2E] px-6 py-3 text-sm font-semibold text-white shadow-lg"
+            className="mt-4 flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20"
           >
-            <span>Test Speed Now</span>
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
+            Test Speed Now
           </Link>
         </nav>
       </div>

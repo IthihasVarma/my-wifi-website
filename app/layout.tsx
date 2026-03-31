@@ -15,13 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Wifi - Speed Test & Troubleshooting",
-  description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance. Test your network, find solutions, and optimize your WiFi experience.",
-  keywords: ["wifi", "speed test", "network", "troubleshooting", "broadband", "wifi analyzer"],
-  authors: [{ name: "My Wifi" }],
+  title: "NeuralWiFi - AI-Powered Wireless Intelligence",
+  description: "Next-generation WiFi testing, AI-driven network optimization, and real-time simulation environments. Engineering the future of wireless intelligence.",
+  keywords: ["wifi", "ai", "network", "mesh", "optimization", "speed test", "deep tech", "wireless"],
+  authors: [{ name: "NeuralWiFi" }],
   openGraph: {
-    title: "My Wifi - Speed Test & Troubleshooting",
-    description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance.",
+    title: "NeuralWiFi - AI-Powered Wireless Intelligence",
+    description: "Next-generation WiFi testing and AI-driven network optimization.",
     type: "website",
   },
 };
@@ -32,11 +32,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body>
+    <html lang="en" className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1 pt-16">

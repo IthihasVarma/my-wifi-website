@@ -25,9 +25,9 @@ const defaultStatus: StatusState = {
 
 const phaseConfig = {
   ping: { color: "from-blue-400 to-cyan-500", icon: "⚡" },
-  download: { color: "from-emerald-400 to-teal-500", icon: "⬇️" },
+  download: { color: "from-cyan-400 to-teal-500", icon: "⬇️" },
   upload: { color: "from-purple-400 to-pink-500", icon: "⬆️" },
-  complete: { color: "from-emerald-400 to-teal-500", icon: "✓" },
+  complete: { color: "from-emerald-400 to-cyan-500", icon: "✓" },
 };
 
 export function SpeedTestPanel() {
@@ -69,7 +69,7 @@ export function SpeedTestPanel() {
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
 
       setAnimatedValues({
         ping: Math.round(targets.ping * eased),
@@ -130,28 +130,28 @@ export function SpeedTestPanel() {
   const phaseStyle = phaseConfig[currentPhase as keyof typeof phaseConfig] || { color: "from-slate-400 to-slate-500", icon: "⏳" };
 
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-emerald-950/10 bg-white p-6 shadow-xl shadow-emerald-900/5 sm:p-8">
+    <div className="relative overflow-hidden rounded-[28px] border border-cyan-400/20 bg-slate-900/80 p-6 shadow-2xl shadow-cyan-500/10 sm:p-8">
       {/* Background decoration */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-100/50 to-teal-100/30 blur-3xl opacity-50" />
-      <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-gradient-to-tr from-teal-100/50 to-emerald-100/30 blur-3xl opacity-50" />
+      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-gradient-to-br from-cyan-500/20 to-purple-500/10 blur-[100px]" />
+      <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-gradient-to-tr from-purple-500/20 to-pink-500/10 blur-[80px]" />
 
       <div className="relative">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-400">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500" />
               </span>
               Live Tool
             </div>
-            <h3 className="mt-3 text-2xl font-bold text-slate-950">WiFi Speed Test</h3>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+            <h3 className="mt-3 text-2xl font-bold text-white">WiFi Speed Test</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
               Run a real browser-based test for ping, download, and upload. Results may vary by browser, device, and network conditions.
             </p>
             {connectionHint ? (
               <p className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {connectionHint}
@@ -163,48 +163,45 @@ export function SpeedTestPanel() {
             type="button"
             onClick={runSpeedTest}
             disabled={running}
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/40 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 btn-ripple"
+            className="group btn-neon"
           >
             {running ? (
-              <>
+              <span className="flex items-center gap-2">
                 <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span>Testing…</span>
-              </>
+                Testing…
+              </span>
             ) : (
-              <>
-                <span>Start Speed Test</span>
-                <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-              </>
+                Start Speed Test
+              </span>
             )}
           </button>
         </div>
 
         {/* Progress Section */}
         <div className="mt-8">
-          <div className={`relative overflow-hidden rounded-2xl bg-slate-100 p-4 transition-all duration-500 ${running || result ? "ring-2 ring-emerald-200" : ""}`}>
+          <div className={`relative overflow-hidden rounded-2xl bg-slate-800/50 p-4 transition-all duration-500 ${running || result ? "ring-2 ring-cyan-400/30" : ""}`}>
             {/* Phase indicator */}
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{phaseStyle.icon}</span>
-                <span className="text-sm font-medium text-slate-700">{status.label}</span>
+                <span className="text-sm font-medium text-slate-300">{status.label}</span>
               </div>
-              <span className="text-sm font-bold text-emerald-600">{status.progress}%</span>
+              <span className="text-sm font-bold text-cyan-400">{status.progress}%</span>
             </div>
 
             {/* Progress bar */}
-            <div className="h-3 overflow-hidden rounded-full bg-white/80">
+            <div className="h-3 overflow-hidden rounded-full bg-slate-900/80">
               <div
-                className={`h-full rounded-full bg-gradient-to-r ${phaseStyle.color} transition-all duration-500 ease-out shadow-lg shadow-emerald-500/30`}
+                className={`h-full rounded-full bg-gradient-to-r ${phaseStyle.color} transition-all duration-500 ease-out shadow-lg shadow-cyan-500/30`}
                 style={{ width: `${status.progress}%` }}
-              >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 h-full w-full animate-shimmer bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-              </div>
+              />
             </div>
 
             {/* Phase dots */}
@@ -219,14 +216,14 @@ export function SpeedTestPanel() {
                     <div 
                       className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
                         isActive 
-                          ? "bg-gradient-to-r from-emerald-400 to-teal-500 shadow-lg shadow-emerald-400/50" 
-                          : "bg-slate-300"
+                          ? "bg-gradient-to-r from-cyan-400 to-purple-500 shadow-lg shadow-cyan-400/50" 
+                          : "bg-slate-600"
                       } ${isCurrent ? "scale-125" : ""}`}
                     />
                     {index < 3 && (
                       <div 
                         className={`h-0.5 w-8 transition-all duration-300 ${
-                          phaseIndex > index ? "bg-emerald-400" : "bg-slate-200"
+                          phaseIndex > index ? "bg-cyan-400" : "bg-slate-700"
                         }`}
                       />
                     )}
@@ -238,11 +235,11 @@ export function SpeedTestPanel() {
         </div>
 
         {error ? (
-          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4">
-            <svg className="h-5 w-5 flex-shrink-0 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mt-6 flex items-center gap-3 rounded-2xl border border-rose-400/30 bg-rose-400/10 p-4">
+            <svg className="h-5 w-5 flex-shrink-0 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="text-sm text-rose-700">{error}</p>
+            <p className="text-sm text-rose-300">{error}</p>
           </div>
         ) : null}
 
@@ -263,7 +260,7 @@ export function SpeedTestPanel() {
                 value={`${animatedValues.download}`} 
                 unit="Mbps"
                 detail={result.qualityLabel} 
-                color="from-emerald-400 to-teal-500"
+                color="from-cyan-400 to-teal-500"
                 icon="⬇️"
               />
               <MetricCard 
@@ -278,24 +275,24 @@ export function SpeedTestPanel() {
 
             {/* Summary Cards */}
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 p-5">
+              <div className="rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-cyan-400/10 to-teal-400/5 p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900/80 shadow-sm">
                     <span className="text-lg">📊</span>
                   </div>
-                  <h4 className="font-semibold text-emerald-900">Summary</h4>
+                  <h4 className="font-semibold text-cyan-400">Summary</h4>
                 </div>
-                <p className="text-sm leading-relaxed text-emerald-950">{result.summary}</p>
+                <p className="text-sm leading-relaxed text-slate-300">{result.summary}</p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100 p-5">
+              <div className="rounded-2xl border border-purple-400/20 bg-gradient-to-br from-purple-400/10 to-pink-400/5 p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900/80 shadow-sm">
                     <span className="text-lg">📡</span>
                   </div>
-                  <h4 className="font-semibold text-slate-900">WiFi Guidance</h4>
+                  <h4 className="font-semibold text-purple-400">WiFi Guidance</h4>
                 </div>
-                <p className="text-sm leading-relaxed text-slate-700">{result.estimatedWifi}</p>
+                <p className="text-sm leading-relaxed text-slate-300">{result.estimatedWifi}</p>
               </div>
             </div>
           </div>
@@ -321,7 +318,7 @@ function MetricCard({
   icon: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-500 hover:border-emerald-300/50 hover:shadow-lg hover:shadow-emerald-900/5 hover:-translate-y-1">
+    <div className="group relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-800/50 p-5 transition-all duration-500 hover:border-cyan-400/30 hover:bg-slate-800">
       {/* Background gradient */}
       <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 transition-opacity duration-500 group-hover:opacity-5`} />
       
