@@ -15,8 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Wifi",
-  description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance.",
+  title: "My Wifi - Speed Test & Troubleshooting",
+  description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance. Test your network, find solutions, and optimize your WiFi experience.",
+  keywords: ["wifi", "speed test", "network", "troubleshooting", "broadband", "wifi analyzer"],
+  authors: [{ name: "My Wifi" }],
+  openGraph: {
+    title: "My Wifi - Speed Test & Troubleshooting",
+    description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +39,9 @@ export default function RootLayout({
       <body>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pt-16">
+            {children}
+          </main>
           <SiteFooter />
         </div>
       </body>
