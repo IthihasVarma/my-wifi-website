@@ -42,16 +42,6 @@ export function HeroSection() {
       {/* 3D WiFi Waves */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="relative w-64 h-64 perspective-container">
-          {/* Central WiFi Icon */}
-          <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl z-10 animate-float"
-            style={{
-              transform: `translate(-50%, -50%) translate(${cardOffset.x}px, ${cardOffset.y}px)`,
-            }}
-          >
-            📶
-          </div>
-
           {/* Orbiting rings */}
           <div 
             className="absolute inset-0 border-2 border-emerald-300/30 rounded-full animate-rotate-slow"
