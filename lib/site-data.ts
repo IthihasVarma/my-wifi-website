@@ -24,12 +24,6 @@ export type BlogPost = {
 export const siteName = "My Wifi";
 export const brandColor = "#0B3B2E";
 
-export const heroStats = [
-  { label: "Live speed test", value: "Real time" },
-  { label: "Troubleshooting answers", value: "50+" },
-  { label: "Wi-Fi upgrade guidance", value: "WiFi 4 → 7" },
-];
-
 export const mainActions = [
   {
     href: "/speedtest",
