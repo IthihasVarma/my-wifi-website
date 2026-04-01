@@ -3,79 +3,6 @@
 import Link from "next/link";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
-const features = [
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-    title: "Real-time Test Monitoring",
-    description: "Watch test progress live from anywhere. Get instant status updates on LANforge tests running on your network.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-    ),
-    title: "Push Notifications",
-    description: "Never miss a test completion or failure. Receive instant alerts when tests pass, fail, or need attention.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-    title: "Report Viewer",
-    description: "View and share PDF/CSV test results on the go. Generate quick reports for clients directly from your phone.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-      </svg>
-    ),
-    title: "Quick WiFi Scanner",
-    description: "On-site WiFi diagnostics using your phone. Scan nearby networks, check signal strength, and identify channel congestion.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: "Remote Test Control",
-    description: "Start, stop, and control basic tests remotely. Manage your test suite without being tied to a desktop.",
-  },
-  {
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-    ),
-    title: "Client Management",
-    description: "Store client details, site notes, and equipment checklists. Keep all your field information organized in one place.",
-  },
-];
-
-const useCases = [
-  {
-    title: "Field Technicians",
-    description: "Run quick WiFi diagnostics on-site before deploying full test rigs. Generate instant reports for clients.",
-  },
-  {
-    title: "Network Engineers",
-    description: "Monitor long-running tests remotely. Get alerts when issues arise and take immediate action.",
-  },
-  {
-    title: "IT Administrators",
-    description: "Manage multiple client sites from a single dashboard. Track test history and performance trends.",
-  },
-];
-
 export default function Home() {
   return (
     <div className="relative">
@@ -97,132 +24,207 @@ export default function Home() {
             
             <ScrollReveal delay={100}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-                Monitor Your Network Tests
-                <span className="block mt-2 text-emerald-400">From Anywhere</span>
+                Mobile Solutions for
+                <span className="block mt-2 text-emerald-400">Network Testing</span>
               </h1>
             </ScrollReveal>
             
             <ScrollReveal delay={200}>
               <p className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-slate-300">
-                CandelaField is the mobile companion app for Candela Technologies' LANforge testing solutions. 
-                Monitor, diagnose, and control your network tests from the field.
+                Two complementary mobile apps designed to transform how you test networks 
+                and engage with customers.
               </p>
             </ScrollReveal>
             
             <ScrollReveal delay={300}>
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  href="/demo"
+                  href="#apps"
                   className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-400 hover:shadow-xl hover:-translate-y-1"
                 >
-                  See Demo
+                  Explore Apps
                   <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </Link>
-                <Link
-                  href="/features"
-                  className="inline-flex items-center gap-2 rounded-full border-2 border-slate-600 bg-transparent px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-emerald-400 hover:bg-slate-800"
-                >
-                  Explore Features
                 </Link>
               </div>
             </ScrollReveal>
           </div>
-          
-          {/* Phone mockup */}
-          <ScrollReveal delay={400}>
-            <div className="mt-16 flex justify-center">
-              <div className="relative">
-                <div className="w-64 sm:w-72 rounded-[3rem] border-8 border-slate-800 bg-slate-900 shadow-2xl">
-                  <div className="aspect-[9/19] rounded-[2.5rem] bg-gradient-to-br from-slate-800 to-slate-900 p-4">
-                    <div className="h-full rounded-[2rem] bg-slate-900 flex flex-col">
-                      {/* App UI Mockup */}
-                      <div className="p-4 pb-2">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                          </div>
-                          <span className="text-emerald-400 text-xs font-bold">CandelaField</span>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="h-2 bg-slate-700 rounded-full w-3/4" />
-                          <div className="h-2 bg-slate-700 rounded-full w-1/2" />
-                          <div className="h-16 bg-emerald-900/50 rounded-xl border border-emerald-500/30 flex items-center justify-center">
-                            <span className="text-emerald-400 text-xs font-mono">3 Tests Running</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Glow effect */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 blur-2xl rounded-full" />
-              </div>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 sm:py-32 bg-slate-50">
+      {/* Two Apps Section */}
+      <section id="apps" className="py-20 sm:py-32 bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="text-center mb-16">
             <span className="inline-block rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-4">
-              Features
+              Our Concepts
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900">
-              Everything You Need to
-              <span className="text-emerald-600"> Test Smarter</span>
+              Two Apps, One Ecosystem
             </h2>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+              From lead capture to test execution - a complete mobile solution for your network testing business.
+            </p>
           </ScrollReveal>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature, index) => (
-              <ScrollReveal key={feature.title} delay={index * 100}>
-                <div className="group relative rounded-[24px] border border-slate-200/80 bg-white p-6 transition-all duration-500 hover:border-emerald-300/50 hover:shadow-xl hover:-translate-y-2">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900">{feature.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{feature.description}</p>
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* CandelaField */}
+            <ScrollReveal>
+              <div className="group relative rounded-[32px] border border-slate-200 bg-white p-8 transition-all duration-500 hover:border-emerald-300/50 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-2">
+                <div className="absolute -top-6 left-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-2xl shadow-lg">
+                  📱
                 </div>
-              </ScrollReveal>
-            ))}
+                
+                <div className="mt-4">
+                  <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    For Field Teams
+                  </span>
+                </div>
+                
+                <h3 className="mt-4 text-2xl font-bold text-slate-900">CandelaField</h3>
+                <p className="mt-3 text-slate-600">
+                  Mobile companion app for network testing professionals. Monitor, diagnose, and control 
+                  your LANforge tests from anywhere.
+                </p>
+
+                <div className="mt-6 space-y-3">
+                  {[
+                    "Real-time test monitoring",
+                    "Push notifications for alerts",
+                    "Quick WiFi diagnostics",
+                    "Remote test control",
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-xs">✓</span>
+                      <span className="text-slate-600 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 flex gap-3">
+                  <Link
+                    href="/candelafield"
+                    className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-emerald-500"
+                  >
+                    Learn More
+                  </Link>
+                  <Link
+                    href="/candelafield#demo"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-emerald-300"
+                  >
+                    View Demo
+                  </Link>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* CandelaAssist */}
+            <ScrollReveal delay={200}>
+              <div className="group relative rounded-[32px] border border-slate-200 bg-white p-8 transition-all duration-500 hover:border-blue-300/50 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-2">
+                <div className="absolute -top-6 left-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-2xl shadow-lg">
+                  🤝
+                </div>
+                
+                <div className="mt-4">
+                  <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                    For Sales & Customers
+                  </span>
+                </div>
+                
+                <h3 className="mt-4 text-2xl font-bold text-slate-900">CandelaAssist</h3>
+                <p className="mt-3 text-slate-600">
+                  Pre-sales qualification tool that helps customers articulate their WiFi challenges 
+                  before they reach your team.
+                </p>
+
+                <div className="mt-6 space-y-3">
+                  {[
+                    "Structured requirement gathering",
+                    "Basic WiFi environment checks",
+                    "Automated needs assessment",
+                    "Seamless handoff to sales team",
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-xs">✓</span>
+                      <span className="text-slate-600 text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 flex gap-3">
+                  <Link
+                    href="/candelaassist"
+                    className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-500"
+                  >
+                    Learn More
+                  </Link>
+                  <Link
+                    href="/candelaassist#demo"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-300"
+                  >
+                    View Demo
+                  </Link>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Use Cases Section */}
-      <section className="py-20 sm:py-32 bg-white">
+      {/* Value Proposition */}
+      <section className="py-20 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <ScrollReveal>
               <span className="inline-block rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-4">
-                Who is it for?
+                The Complete Solution
               </span>
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
-                Built for
-                <span className="text-emerald-600"> Network Professionals</span>
+                From First Contact to
+                <span className="text-emerald-600"> Test Results</span>
               </h2>
               <p className="mt-6 text-lg text-slate-600">
-                CandelaField bridges the gap between your testing hardware and mobile workflow. 
-                Whether you're in the office or on-site, stay connected to your tests.
+                These two apps work together to create a seamless experience for both your team and your customers.
               </p>
             </ScrollReveal>
 
-            <div className="space-y-6">
-              {useCases.map((useCase, index) => (
-                <ScrollReveal key={useCase.title} delay={index * 150}>
-                  <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:border-emerald-300 hover:bg-emerald-50/50">
-                    <h3 className="text-lg font-bold text-slate-900">{useCase.title}</h3>
-                    <p className="mt-2 text-sm text-slate-600">{useCase.description}</p>
+            <ScrollReveal delay={200}>
+              <div className="space-y-6">
+                {[
+                  {
+                    step: "01",
+                    title: "Customer Discovers Candela",
+                    description: "Prospects find CandelaAssist through website or sales team, start documenting their needs.",
+                  },
+                  {
+                    step: "02",
+                    title: "Requirements Captured",
+                    description: "Structured questions and basic checks gather all necessary information upfront.",
+                  },
+                  {
+                    step: "03",
+                    title: "Sales Handoff",
+                    description: "Qualified leads with complete context go to your team - no wasted discovery calls.",
+                  },
+                  {
+                    step: "04",
+                    title: "Test Execution",
+                    description: "CandelaField empowers field teams to execute tests efficiently with full context.",
+                  },
+                ].map((item) => (
+                  <div key={item.step} className="flex gap-4">
+                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold">
+                      {item.step}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
+                      <p className="text-slate-600 text-sm mt-1">{item.description}</p>
+                    </div>
                   </div>
-                </ScrollReveal>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -233,20 +235,20 @@ export default function Home() {
           <ScrollReveal>
             <div className="rounded-[32px] border border-emerald-400/20 bg-white/5 p-8 sm:p-12 shadow-2xl backdrop-blur-xl">
               <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-3xl mb-6 shadow-lg shadow-emerald-500/30">
-                📱
+                🚀
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-                Ready to Transform Your Testing Workflow?
+                Ready to Build These Apps?
               </h2>
               <p className="mt-4 text-lg text-slate-300 max-w-xl mx-auto">
-                See how CandelaField can help you monitor and manage your network tests from anywhere.
+                These are concept demos ready to be developed. Let's discuss how to bring them to life.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  href="/demo"
+                  href="/about"
                   className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-400 hover:shadow-xl hover:-translate-y-1"
                 >
-                  View Demo
+                  Contact Us
                   <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
