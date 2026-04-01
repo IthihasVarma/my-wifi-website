@@ -21,8 +21,9 @@ export type BlogPost = {
   date: string;
 };
 
-export const siteName = "My Wifi";
+export const siteName = "CandelaField";
 export const brandColor = "#0B3B2E";
+export const tagline = "Mobile Companion for Network Testing";
 
 export const mainActions = [
   {

@@ -15,13 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "My Wifi - Speed Test & Troubleshooting",
-  description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance. Test your network, find solutions, and optimize your WiFi experience.",
-  keywords: ["wifi", "speed test", "network", "troubleshooting", "broadband", "wifi analyzer"],
-  authors: [{ name: "My Wifi" }],
+  title: "CandelaField - Mobile Companion for Network Testing",
+  description: "Monitor, diagnose, and control your Candela network tests from anywhere. The ultimate companion app for field technicians and network engineers.",
+  keywords: ["Candela", "network testing", "WiFi", "LANforge", "field testing", "network monitoring", "B2B"],
+  authors: [{ name: "Candela Technologies" }],
   openGraph: {
-    title: "My Wifi - Speed Test & Troubleshooting",
-    description: "Real-time Wi‑Fi speed test, troubleshooting answers, and upgrade guidance.",
+    title: "CandelaField - Mobile Companion for Network Testing",
+    description: "Monitor, diagnose, and control your Candela network tests from anywhere.",
     type: "website",
   },
 };

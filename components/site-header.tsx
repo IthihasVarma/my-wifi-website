@@ -7,10 +7,9 @@ import { siteName } from "@/lib/site-data";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/speedtest", label: "Speedtest" },
-  { href: "/troubleshoot", label: "Troubleshoot" },
-  { href: "/know-your-wifi", label: "Know Your WiFi" },
-  { href: "/blog", label: "Blog" },
+  { href: "/features", label: "Features" },
+  { href: "/demo", label: "Demo" },
+  { href: "/about", label: "About" },
 ];
 
 export function SiteHeader() {
@@ -94,10 +93,10 @@ export function SiteHeader() {
         {/* Desktop CTA */}
         <div className="hidden items-center gap-3 md:flex">
           <Link
-            href="/speedtest"
+            href="/demo"
             className="group inline-flex items-center gap-2 rounded-full bg-[#0B3B2E] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/30 transition-all duration-300 hover:bg-emerald-900 hover:shadow-xl hover:-translate-y-0.5"
           >
-            <span>Test Speed</span>
+            <span>Request Demo</span>
             <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -158,10 +157,10 @@ export function SiteHeader() {
             );
           })}
           <Link
-            href="/speedtest"
+            href="/demo"
             className="mt-4 flex items-center justify-center gap-2 rounded-full bg-[#0B3B2E] px-6 py-3 text-sm font-semibold text-white shadow-lg"
           >
-            <span>Test Speed Now</span>
+            <span>Request Demo</span>
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
