@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TicketOS — B2B Support Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg2: #0f1320;
+    --bg3: #151b2e;
+    --bg4: #1c2540;
+    --border: rgba(0,210,255,0.12);
+    --border2: rgba(0,210,255,0.22);
+    --cyan: #00d2ff;
+    --cyan2: #00a8cc;
+    --cyan-glow: rgba(0,210,255,0.18);
+    --text: #e8eaf0;
+    --text2: #8892a8;
+    --text3: #4a5568;
+    --card: rgba(15,19,32,0.85);
+    --glass: rgba(21,27,46,0.7);
+    --shadow: 0 4px 24px rgba(0,0,0,0.5);
+    --shadow-hover: 0 8px 40px rgba(0,210,255,0.12);
+    --radius: 10px;
+    --radius2: 6px;
+    --font: 'DM Mono', monospace;
+    --font2: 'DM Sans', sans-serif;
+    --p-low: #4ade80;
+    --p-medium: #facc15;
+    --p-high: #fb923c;
+    --p-critical: #f87171;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: var(--font); background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--cyan2); }
+
+  /* ─── NAVBAR ─────────────────────────────── */
+  #navbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px; height: 58px;
+    background: rgba(10,13,20,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(14px);
+  }
+  #navbar .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 500; color: var(--cyan); white-space: nowrap; flex-shrink: 0;
+    letter-spacing: -0.5px;
+  }
+  #navbar .logo-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--cyan), #006aff);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  #dashTitle {
+    background: transparent; border: none; outline: none;
+    font-family: var(--font); font-size: 17px; font-weight: 500;
+    color: var(--cyan); cursor: pointer; min-width: 10px;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.2s;
+  }
+  #dashTitle:focus { border-bottom-color: var(--cyan2); }
+  .nav-spacer { flex: 1; }
+  #statsBar {
+    display: flex; align-items: center; gap: 18px; flex-shrink: 0;
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: 4px 11px; border-radius: 99px;
+    font-size: 11px; color: var(--text2); white-space: nowrap;
+  }
+  .stat-pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .stat-pill strong { color: var(--text); font-weight: 500; }
+  #searchBar {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 6px 12px 6px 34px;
+    color: var(--text); font-family: var(--font); font-size: 12px;
+    outline: none; width: 200px; transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  #searchBar:focus { border-color: var(--cyan2); box-shadow: 0 0 0 2px var(--cyan-glow); }
+  .search-wrap { position: relative; }
+  .search-wrap .ico { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text3); pointer-events: none; }
+  #btnNewSection {
+    background: linear-gradient(135deg, var(--cyan), #0077ff);
+    color: #000; border: none; border-radius: var(--radius2);
+    padding: 7px 14px; font-family: var(--font); font-size: 12px; font-weight: 500;
+    cursor: pointer; white-space: nowrap; transition: opacity 0.2s, box-shadow 0.2s;
+  }
+  #btnNewSection:hover { opacity: 0.88; box-shadow: 0 0 16px var(--cyan-glow); }
+
+  /* ─── STATS ROW ──────────────────────────── */
+  #statsRow {
+    display: flex; gap: 14px; padding: 14px 24px 0;
+    flex-wrap: wrap;
+  }
+  .scard {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 18px;
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 110px;
+  }
+  .scard .slabel { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .scard .sval { font-size: 22px; font-weight: 500; color: var(--text); }
+  .scard .sdesc { font-size: 10px; color: var(--text2); }
+
+  /* ─── KANBAN BOARD ───────────────────────── */
+  #boardWrap {
+    padding: 16px 24px 0;
+    overflow-x: auto;
+  }
+  #board {
+    display: flex; gap: 16px; min-width: max-content;
+    padding-bottom: 8px;
+  }
+  .column {
+    width: 300px; flex-shrink: 0;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); display: flex; flex-direction: column;
+    max-height: calc(100vh - 340px); min-height: 180px;
+    transition: box-shadow 0.2s;
+  }
+  .column.drag-over { box-shadow: 0 0 0 2px var(--cyan), var(--shadow-hover); }
+  .col-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--col-color, var(--cyan));
+    border-radius: var(--radius) var(--radius) 0 0;
+    flex-shrink: 0;
+  }
+  .col-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--col-color, var(--cyan)); flex-shrink: 0; }
+  .col-title-input {
+    background: transparent; border: none; outline: none;
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text); flex: 1; min-width: 0;
+    cursor: pointer;
+  }
+  .col-title-input:focus { cursor: text; }
+  .col-badge {
+    background: var(--bg4); color: var(--text2);
+    font-size: 10px; border-radius: 99px; padding: 1px 7px; flex-shrink: 0;
+  }
+  .col-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .col-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 14px; padding: 2px 4px;
+    border-radius: 4px; transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .col-btn:hover { color: var(--text); background: var(--bg4); }
+  .col-btn.del:hover { color: var(--p-critical); }
+  .col-cards {
+    flex: 1; overflow-y: auto; padding: 10px 10px 4px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .col-footer { padding: 8px 10px 10px; flex-shrink: 0; }
+  .btn-add-ticket {
+    width: 100%; background: transparent; border: 1px dashed var(--border2);
+    color: var(--text3); font-family: var(--font); font-size: 11px;
+    padding: 8px; border-radius: var(--radius2); cursor: pointer;
+    transition: all 0.2s; letter-spacing: 0.3px;
+  }
+  .btn-add-ticket:hover { border-color: var(--cyan2); color: var(--cyan); background: var(--cyan-glow); }
+
+  /* ─── TICKET CARD ────────────────────────── */
+  .ticket-card {
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 11px 13px;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    position: relative; backdrop-filter: blur(8px);
+    border-left: 3px solid var(--col-color, var(--cyan));
+  }
+  .ticket-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--border2); }
+  .ticket-card.dragging { opacity: 0.45; transform: rotate(2deg); }
+  .ticket-card.done-card::after {
+    content: '✓'; position: absolute; top: 8px; right: 9px;
+    font-size: 11px; color: var(--p-low); background: rgba(74,222,128,0.12);
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
+  .tc-title { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.4; flex: 1; }
+  .prio-badge {
+    font-size: 9px; padding: 2px 7px; border-radius: 99px; flex-shrink: 0;
+    text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
+  }
+  .prio-low { background: rgba(74,222,128,0.15); color: var(--p-low); }
+  .prio-medium { background: rgba(250,204,21,0.15); color: var(--p-medium); }
+  .prio-high { background: rgba(251,146,60,0.15); color: var(--p-high); }
+  .prio-critical { background: rgba(248,113,113,0.15); color: var(--p-critical); }
+  .tc-client { font-size: 10px; color: var(--text2); margin-bottom: 3px; }
+  .tc-meta { display: flex; align-items: center; justify-content: space-between; }
+  .tc-company { font-size: 10px; color: var(--text3); }
+  .tc-date { font-size: 9px; color: var(--text3); }
+
+  /* ─── MAP SECTION ────────────────────────── */
+  #mapSection {
+    padding: 16px 24px 24px;
+  }
+  #mapHeader {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  #mapHeader h2 { font-size: 12px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; }
+  #mapHeader .line { flex: 1; height: 1px; background: var(--border); }
+  #mapLegend { display: flex; gap: 14px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text3); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  #map {
+    width: 100%; height: 42vh; min-height: 280px;
+    border-radius: var(--radius); border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* ─── MODAL ──────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 14px; width: 100%; max-width: 560px;
+    max-height: 88vh; overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+    transform: translateY(16px); transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+  }
+  .modal-head h3 { font-size: 14px; font-weight: 500; color: var(--text); }
+  .modal-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 20px; line-height: 1;
+    transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 18px 22px 22px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1/-1; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
+  .field input, .field textarea, .field select {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 8px 11px;
+    color: var(--text); font-family: var(--font); font-size: 12px;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--cyan2); box-shadow: 0 0 0 2px var(--cyan-glow);
+  }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .field select option { background: var(--bg3); }
+  .city-wrap { position: relative; }
+  .city-suggestions {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 600;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: var(--radius2); overflow: hidden; display: none;
+    box-shadow: var(--shadow);
+  }
+  .city-suggestions.show { display: block; }
+  .city-sug-item {
+    padding: 8px 12px; font-size: 11px; color: var(--text2);
+    cursor: pointer; transition: background 0.1s;
+  }
+  .city-sug-item:hover { background: var(--bg4); color: var(--text); }
+  .modal-footer {
+    display: flex; gap: 10px; justify-content: flex-end;
+    padding: 14px 22px 18px; border-top: 1px solid var(--border);
+  }
+  .btn-cancel {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); border-radius: var(--radius2);
+    padding: 8px 18px; font-family: var(--font); font-size: 12px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-cancel:hover { border-color: var(--border2); color: var(--text); }
+  .btn-save {
+    background: linear-gradient(135deg, var(--cyan), #0077ff);
+    color: #000; border: none; border-radius: var(--radius2);
+    padding: 8px 20px; font-family: var(--font); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: opacity 0.2s, box-shadow 0.2s;
+  }
+  .btn-save:hover { opacity: 0.88; box-shadow: 0 0 16px var(--cyan-glow); }
+
+  /* ─── DETAIL PANEL ───────────────────────── */
+  #detailPanel {
+    position: fixed; top: 0; right: 0; width: 380px; height: 100vh; z-index: 400;
+    background: var(--bg2); border-left: 1px solid var(--border2);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  #detailPanel.open { transform: translateX(0); }
+  .dp-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .dp-head h3 { font-size: 13px; font-weight: 500; color: var(--text); }
+  .dp-head-actions { display: flex; gap: 8px; }
+  .dp-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 5px 12px;
+    font-family: var(--font); font-size: 11px; color: var(--text2);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .dp-btn:hover { color: var(--text); border-color: var(--border2); }
+  .dp-btn.del:hover { color: var(--p-critical); border-color: var(--p-critical); }
+  .dp-body { flex: 1; overflow-y: auto; padding: 18px 20px; }
+  .dp-section { margin-bottom: 20px; }
+  .dp-section-title { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
+  .dp-row { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 8px; }
+  .dp-row .lbl { font-size: 10px; color: var(--text3); min-width: 80px; padding-top: 1px; }
+  .dp-row .val { font-size: 11px; color: var(--text); word-break: break-word; }
+  .dp-select {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 6px 10px;
+    color: var(--text); font-family: var(--font); font-size: 11px;
+    outline: none; width: 100%; transition: border-color 0.2s;
+  }
+  .dp-select:focus { border-color: var(--cyan2); }
+  .dp-desc { font-size: 11px; color: var(--text2); line-height: 1.6; background: var(--bg3); border-radius: var(--radius2); padding: 10px 12px; }
+
+  /* ─── NEW SECTION MODAL ──────────────────── */
+  #sectionModal .modal { max-width: 380px; }
+
+  /* ─── COLOR PICKER MODAL ─────────────────── */
+  #colorModal .modal { max-width: 320px; }
+  .color-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-top: 10px; }
+  .color-swatch {
+    width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+    border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s;
+  }
+  .color-swatch:hover { transform: scale(1.2); }
+  .color-swatch.selected { border-color: #fff; }
+  #customColorInput { margin-top: 12px; width: 100%; height: 36px; border-radius: var(--radius2); border: 1px solid var(--border); cursor: pointer; background: var(--bg3); }
+
+  /* ─── TOAST ──────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
+    font-size: 12px; padding: 9px 20px; border-radius: 99px;
+    box-shadow: var(--shadow); z-index: 900;
+    opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ─── LEAFLET OVERRIDES ──────────────────── */
+  .leaflet-popup-content-wrapper {
+    background: var(--bg2) !important; border: 1px solid var(--border2) !important;
+    border-radius: var(--radius) !important; box-shadow: var(--shadow) !important;
+    color: var(--text) !important; font-family: var(--font) !important;
+  }
+  .leaflet-popup-tip { background: var(--bg2) !important; }
+  .leaflet-popup-content { margin: 12px 14px !important; font-size: 11px !important; line-height: 1.6 !important; }
+  .map-popup-title { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .map-popup-row { display: flex; gap: 6px; color: var(--text2); }
+  .map-popup-lbl { color: var(--text3); min-width: 52px; }
+  .map-popup-status { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 10px; margin-top: 6px; }
+
+  /* ─── RESPONSIVE ─────────────────────────── */
+  @media (max-width: 700px) {
+    #statsBar { display: none; }
+    #searchBar { width: 130px; }
+    #detailPanel { width: 100vw; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <input id="dashTitle" type="text" value="TicketOS" title="Click to rename dashboard"/>
+  </div>
+  <div id="statsBar">
+    <div class="stat-pill"><div class="dot" style="background:var(--p-low)"></div> Low <strong id="sLow">0</strong></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--p-medium)"></div> Med <strong id="sMed">0</strong></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--p-high)"></div> High <strong id="sHigh">0</strong></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--p-critical)"></div> Crit <strong id="sCrit">0</strong></div>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="search-wrap">
+    <span class="ico">🔍</span>
+    <input type="text" id="searchBar" placeholder="Search tickets..."/>
+  </div>
+  <button id="btnNewSection">+ New Section</button>
+</nav>
+
+<!-- STATS ROW -->
+<div id="statsRow">
+  <div class="scard">
+    <div class="slabel">Total Tickets</div>
+    <div class="sval" id="statTotal">0</div>
+    <div class="sdesc">across all sections</div>
+  </div>
+  <div class="scard">
+    <div class="slabel">Resolved Today</div>
+    <div class="sval" id="statDone">0</div>
+    <div class="sdesc">moved to done</div>
+  </div>
+  <div class="scard">
+    <div class="slabel">Active Clients</div>
+    <div class="sval" id="statClients">0</div>
+    <div class="sdesc">unique companies</div>
+  </div>
+  <div class="scard">
+    <div class="slabel">Critical Open</div>
+    <div class="sval" id="statCritOpen" style="color:var(--p-critical)">0</div>
+    <div class="sdesc">need immediate action</div>
+  </div>
+</div>
+
+<!-- KANBAN BOARD -->
+<div id="boardWrap">
+  <div id="board"></div>
+</div>
+
+<!-- MAP -->
+<div id="mapSection">
+  <div id="mapHeader">
+    <h2>🌍 Client World Map</h2>
+    <div class="line"></div>
+    <div id="mapLegend"></div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div id="detailPanel">
+  <div class="dp-head">
+    <h3 id="dpTitle">Ticket Detail</h3>
+    <div class="dp-head-actions">
+      <button class="dp-btn" id="dpEdit">✏️ Edit</button>
+      <button class="dp-btn del" id="dpDelete">🗑 Delete</button>
+      <button class="dp-btn" id="dpClose">✕</button>
+    </div>
+  </div>
+  <div class="dp-body" id="dpBody"></div>
+</div>
+
+<!-- TICKET MODAL -->
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Add Ticket</h3>
+      <button class="modal-close" id="closeTicketModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="field"><label>Client Name *</label><input id="fClientName" type="text" placeholder="John Smith"/></div>
+        <div class="field"><label>Company Name *</label><input id="fCompany" type="text" placeholder="Acme Corp"/></div>
+        <div class="field"><label>Email</label><input id="fEmail" type="email" placeholder="john@acme.com"/></div>
+        <div class="field"><label>Phone</label><input id="fPhone" type="text" placeholder="+1 555 0100"/></div>
+        <div class="field full">
+          <label>Ticket Title *</label>
+          <input id="fTitle" type="text" placeholder="Brief description of the issue"/>
+        </div>
+        <div class="field full">
+          <label>Description</label>
+          <textarea id="fDesc" placeholder="Detailed description..."></textarea>
+        </div>
+        <div class="field">
+          <label>Priority</label>
+          <select id="fPriority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Section</label>
+          <select id="fSection"></select>
+        </div>
+        <div class="field full">
+          <label>City (type to search)</label>
+          <div class="city-wrap">
+            <input id="fCity" type="text" placeholder="e.g. Mumbai, London, New York" autocomplete="off"/>
+            <div class="city-suggestions" id="citySuggestions"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Country</label>
+          <input id="fCountry" type="text" placeholder="India"/>
+        </div>
+        <div class="field">
+          <label>Latitude</label>
+          <input id="fLat" type="number" step="any" placeholder="28.6139"/>
+        </div>
+        <div class="field">
+          <label>Longitude</label>
+          <input id="fLng" type="number" step="any" placeholder="77.2090"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancelTicketModal">Cancel</button>
+      <button class="btn-save" id="saveTicket">Save Ticket</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW SECTION MODAL -->
+<div class="modal-overlay" id="sectionModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head">
+      <h3>New Section</h3>
+      <button class="modal-close" id="closeSectionModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Section Name</label><input id="fSecName" type="text" placeholder="e.g. Escalated"/></div>
+      <div class="field" style="margin-top:12px">
+        <label>Section Color</label>
+        <div class="color-grid" id="secColorGrid"></div>
+        <input type="color" id="customColorInput" value="#00d2ff"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancelSectionModal">Cancel</button>
+      <button class="btn-save" id="saveSectionBtn">Create Section</button>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR PICK MODAL -->
+<div class="modal-overlay" id="colorModal">
+  <div class="modal" style="max-width:320px">
+    <div class="modal-head">
+      <h3>Change Section Color</h3>
+      <button class="modal-close" id="closeColorModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="color-grid" id="colorGrid"></div>
+      <input type="color" id="customColorInput2" value="#00d2ff" style="margin-top:12px;width:100%;height:36px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:var(--bg3)"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancelColorModal">Cancel</button>
+      <button class="btn-save" id="saveColorBtn">Apply</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA & STATE
+// ══════════════════════════════════════════
+const PALETTE = ['#00d2ff','#4ade80','#facc15','#fb923c','#f87171','#a78bfa','#38bdf8','#f472b6','#34d399','#e879f9','#fbbf24','#60a5fa','#f43f5e','#10b981','#8b5cf6','#06b6d4'];
+
+const CITIES = {
+  "new york": [40.7128, -74.0060], "los angeles": [34.0522, -118.2437], "chicago": [41.8781, -87.6298],
+  "houston": [29.7604, -95.3698], "london": [51.5074, -0.1278], "paris": [48.8566, 2.3522],
+  "berlin": [52.5200, 13.4050], "madrid": [40.4168, -3.7038], "rome": [41.9028, 12.4964],
+  "amsterdam": [52.3676, 4.9041], "tokyo": [35.6762, 139.6503], "beijing": [39.9042, 116.4074],
+  "shanghai": [31.2304, 121.4737], "hong kong": [22.3193, 114.1694], "singapore": [1.3521, 103.8198],
+  "sydney": [-33.8688, 151.2093], "melbourne": [-37.8136, 144.9631], "toronto": [43.6510, -79.3470],
+  "vancouver": [49.2827, -123.1207], "montreal": [45.5017, -73.5673], "dubai": [25.2048, 55.2708],
+  "abu dhabi": [24.4539, 54.3773], "riyadh": [24.7136, 46.6753], "mumbai": [19.0760, 72.8777],
+  "delhi": [28.6139, 77.2090], "bangalore": [12.9716, 77.5946], "chennai": [13.0827, 80.2707],
+  "hyderabad": [17.3850, 78.4867], "kolkata": [22.5726, 88.3639], "pune": [18.5204, 73.8567],
+  "jaipur": [26.9124, 75.7873], "ahmedabad": [23.0225, 72.5714], "surat": [21.1702, 72.8311],
+  "jakarta": [-6.2088, 106.8456], "bangkok": [13.7563, 100.5018], "kuala lumpur": [3.1390, 101.6869],
+  "manila": [14.5995, 120.9842], "seoul": [37.5665, 126.9780], "taipei": [25.0330, 121.5654],
+  "istanbul": [41.0082, 28.9784], "moscow": [55.7558, 37.6176], "cairo": [30.0444, 31.2357],
+  "lagos": [6.5244, 3.3792], "nairobi": [-1.2921, 36.8219], "johannesburg": [-26.2041, 28.0473],
+  "casablanca": [33.5731, -7.5898], "mexico city": [19.4326, -99.1332], "sao paulo": [-23.5505, -46.6333],
+  "rio de janeiro": [-22.9068, -43.1729], "buenos aires": [-34.6037, -58.3816], "lima": [-12.0464, -77.0428],
+  "bogota": [4.7110, -74.0721], "santiago": [-33.4489, -70.6693], "miami": [25.7617, -80.1918],
+  "san francisco": [37.7749, -122.4194], "seattle": [47.6062, -122.3321], "boston": [42.3601, -71.0589],
+  "atlanta": [33.7490, -84.3880], "dallas": [32.7767, -96.7970], "phoenix": [33.4484, -112.0740],
+  "denver": [39.7392, -104.9903], "las vegas": [36.1699, -115.1398], "washington": [38.9072, -77.0369],
+  "zurich": [47.3769, 8.5417], "vienna": [48.2082, 16.3738], "brussels": [50.8503, 4.3517],
+  "stockholm": [59.3293, 18.0686], "oslo": [59.9139, 10.7522], "copenhagen": [55.6761, 12.5683],
+  "helsinki": [60.1699, 24.9384], "lisbon": [38.7223, -9.1393], "athens": [37.9838, 23.7275],
+  "prague": [50.0755, 14.4378], "warsaw": [52.2297, 21.0122], "budapest": [47.4979, 19.0402],
+  "bucharest": [44.4268, 26.1025], "kyiv": [50.4501, 30.5234]
+};
+
+let state = { sections: [], tickets: [], editingTicketId: null, colorTargetId: null, viewingTicketId: null };
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('ticketos_v2');
+    if (raw) { state = JSON.parse(raw); return; }
+  } catch(e) {}
+  // SEED DATA
+  state.sections = [
+    { id: genId(), name: 'Ticket Received', color: '#f87171' },
+    { id: genId(), name: 'Under Process', color: '#facc15' },
+    { id: genId(), name: 'In Review', color: '#38bdf8' },
+    { id: genId(), name: 'Done', color: '#4ade80' },
+  ];
+  const [s0,s1,s2,s3] = state.sections.map(s=>s.id);
+  state.tickets = [
+    { id: genId(), clientName:'Priya Sharma', company:'Infosys Ltd', email:'priya@infosys.com', phone:'+91 98765 43210', title:'API Integration Failure', desc:'REST API endpoint returning 502 on prod.', priority:'Critical', sectionId:s0, city:'Mumbai', country:'India', lat:19.0760, lng:72.8777, dateRaised:today(), doneDate:null },
+    { id: genId(), clientName:'James Mercer', company:'BlueSky Analytics', email:'james@bluesky.io', phone:'+1 212 555 0199', title:'Dashboard data lag', desc:'Metrics delayed by 15 min during peak.', priority:'High', sectionId:s1, city:'New York', country:'USA', lat:40.7128, lng:-74.0060, dateRaised:today(), doneDate:null },
+    { id: genId(), clientName:'Aiko Tanaka', company:'Nexgen Japan', email:'aiko@nexgen.jp', phone:'+81 3-1234-5678', title:'SSO login broken', desc:'SAML callback returning 403 after recent update.', priority:'Critical', sectionId:s1, city:'Tokyo', country:'Japan', lat:35.6762, lng:139.6503, dateRaised:today(), doneDate:null },
+    { id: genId(), clientName:'Lucas Müller', company:'EuroTech GmbH', email:'lucas@eurotech.de', phone:'+49 30 12345678', title:'Report export timeout', desc:'PDF export hangs for datasets > 10k rows.', priority:'Medium', sectionId:s2, city:'Berlin', country:'Germany', lat:52.5200, lng:13.4050, dateRaised:today(), doneDate:null },
+    { id: genId(), clientName:'Fatima Al-Rashid', company:'Gulf Solutions', email:'fatima@gulf.ae', phone:'+971 50 123 4567', title:'User provisioning delay', desc:'New accounts taking 2+ hours to activate.', priority:'Low', sectionId:s3, city:'Dubai', country:'UAE', lat:25.2048, lng:55.2708, dateRaised:today(), doneDate:today() },
+  ];
+}
+
+function saveState() { localStorage.setItem('ticketos_v2', JSON.stringify(state)); }
+
+// ══════════════════════════════════════════
+//  RENDER KANBAN
+// ══════════════════════════════════════════
+let dragTicketId = null, dragSourceColId = null;
+
+function renderBoard() {
+  const board = document.getElementById('board');
+  const q = document.getElementById('searchBar').value.toLowerCase();
+  board.innerHTML = '';
+  state.sections.forEach(sec => {
+    let tickets = state.tickets.filter(t => t.sectionId === sec.id);
+    if (q) tickets = tickets.filter(t =>
+      t.title.toLowerCase().includes(q) || t.clientName.toLowerCase().includes(q) ||
+      t.company.toLowerCase().includes(q) || t.city.toLowerCase().includes(q)
+    );
+    const col = document.createElement('div');
+    col.className = 'column';
+    col.dataset.secId = sec.id;
+    col.style.setProperty('--col-color', sec.color);
+    col.innerHTML = `
+      <div class="col-header" style="border-left-color:${sec.color}">
+        <div class="col-dot" style="background:${sec.color}"></div>
+        <input class="col-title-input" value="${esc(sec.name)}" data-secid="${sec.id}" title="Click to rename"/>
+        <span class="col-badge">${tickets.length}</span>
+        <div class="col-actions">
+          <button class="col-btn" data-color="${sec.id}" title="Change color">🎨</button>
+          <button class="col-btn del" data-del="${sec.id}" title="Delete section">✕</button>
+        </div>
+      </div>
+      <div class="col-cards" id="cards-${sec.id}" data-secid="${sec.id}"></div>
+      <div class="col-footer">
+        <button class="btn-add-ticket" data-addto="${sec.id}">+ Add Ticket</button>
+      </div>`;
+    board.appendChild(col);
+    const cardsEl = col.querySelector('.col-cards');
+    tickets.forEach(t => cardsEl.appendChild(makeCard(t, sec)));
+    setupColDrop(cardsEl, sec.id);
+  });
+  updateStats();
+  updateMap();
+  updateMapLegend();
+}
+
+function makeCard(t, sec) {
+  const card = document.createElement('div');
+  card.className = 'ticket-card' + (isDone(t) ? ' done-card' : '');
+  card.dataset.tid = t.id;
+  card.style.setProperty('--col-color', sec.color);
+  card.draggable = true;
+  card.innerHTML = `
+    <div class="tc-top">
+      <div class="tc-title">${esc(t.title)}</div>
+      <span class="prio-badge prio-${t.priority.toLowerCase()}">${t.priority}</span>
+    </div>
+    <div class="tc-client">👤 ${esc(t.clientName)}</div>
+    <div class="tc-meta">
+      <div class="tc-company">🏢 ${esc(t.company)}</div>
+      <div class="tc-date">${t.dateRaised}</div>
+    </div>`;
+  card.addEventListener('click', () => openDetail(t.id));
+  card.addEventListener('dragstart', e => { dragTicketId=t.id; dragSourceColId=sec.id; card.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+  card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  return card;
+}
+
+function isDone(t) {
+  const doneSec = state.sections.find(s => s.name.toLowerCase() === 'done');
+  return doneSec && t.sectionId === doneSec.id;
+}
+
+function setupColDrop(cardsEl, secId) {
+  cardsEl.addEventListener('dragover', e => { e.preventDefault(); cardsEl.closest('.column').classList.add('drag-over'); });
+  cardsEl.addEventListener('dragleave', () => cardsEl.closest('.column').classList.remove('drag-over'));
+  cardsEl.addEventListener('drop', e => {
+    e.preventDefault();
+    cardsEl.closest('.column').classList.remove('drag-over');
+    if (!dragTicketId || dragSourceColId === secId) return;
+    const t = state.tickets.find(x => x.id === dragTicketId);
+    if (!t) return;
+    t.sectionId = secId;
+    const doneSec = state.sections.find(s => s.name.toLowerCase() === 'done');
+    if (doneSec && secId === doneSec.id && !t.doneDate) t.doneDate = today();
+    else if (doneSec && secId !== doneSec.id) t.doneDate = null;
+    dragTicketId = null; dragSourceColId = null;
+    saveState(); renderBoard();
+    showToast('Ticket moved ✓');
+  });
+}
+
+// ══════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════
+function updateStats() {
+  const t = state.tickets;
+  document.getElementById('statTotal').textContent = t.length;
+  const doneCount = t.filter(x => x.doneDate === today()).length;
+  document.getElementById('statDone').textContent = doneCount;
+  document.getElementById('statClients').textContent = new Set(t.map(x=>x.company)).size;
+  const doneSec = state.sections.find(s=>s.name.toLowerCase()==='done');
+  const critOpen = t.filter(x=>x.priority==='Critical' && !(doneSec&&x.sectionId===doneSec.id)).length;
+  document.getElementById('statCritOpen').textContent = critOpen;
+  document.getElementById('sLow').textContent = t.filter(x=>x.priority==='Low').length;
+  document.getElementById('sMed').textContent = t.filter(x=>x.priority==='Medium').length;
+  document.getElementById('sHigh').textContent = t.filter(x=>x.priority==='High').length;
+  document.getElementById('sCrit').textContent = t.filter(x=>x.priority==='Critical').length;
+}
+
+// ══════════════════════════════════════════
+//  MAP
+// ══════════════════════════════════════════
+let map, markers = [];
+function initMap() {
+  map = L.map('map', { zoomControl: true, attributionControl: false }).setView([20, 0], 2);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; CartoDB', subdomains: 'abcd', maxZoom: 19
+  }).addTo(map);
+}
+
+function updateMap() {
+  if (!map) return;
+  markers.forEach(m => m.remove());
+  markers = [];
+  state.tickets.forEach(t => {
+    if (!t.lat || !t.lng) return;
+    const sec = state.sections.find(s => s.id === t.sectionId);
+    const color = sec ? sec.color : '#00d2ff';
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.35);box-shadow:0 0 10px ${color}88;transition:transform 0.2s"></div>`,
+      iconSize: [14,14], iconAnchor: [7,7]
+    });
+    const m = L.marker([t.lat, t.lng], {icon});
+    m.bindPopup(`
+      <div class="map-popup-title">${esc(t.title)}</div>
+      <div class="map-popup-row"><span class="map-popup-lbl">Client</span>${esc(t.clientName)}</div>
+      <div class="map-popup-row"><span class="map-popup-lbl">Company</span>${esc(t.company)}</div>
+      <div class="map-popup-row"><span class="map-popup-lbl">Location</span>${esc(t.city)}, ${esc(t.country)}</div>
+      <div class="map-popup-row"><span class="map-popup-lbl">Phone</span>${esc(t.phone)}</div>
+      <div class="map-popup-row"><span class="map-popup-lbl">Email</span>${esc(t.email)}</div>
+      <div><span class="map-popup-status prio-badge prio-${t.priority.toLowerCase()}">${t.priority}</span>
+      <span class="map-popup-status" style="background:${color}22;color:${color};margin-left:4px">${sec?sec.name:'Unknown'}</span></div>
+    `);
+    m.on('mouseover', function() { this.openPopup(); });
+    m.addTo(map);
+    markers.push(m);
+  });
+}
+
+function updateMapLegend() {
+  const leg = document.getElementById('mapLegend');
+  leg.innerHTML = state.sections.map(s => {
+    const cnt = state.tickets.filter(t=>t.sectionId===s.id&&t.lat&&t.lng).length;
+    return `<div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div>${esc(s.name)} (${cnt})</div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  DETAIL PANEL
+// ══════════════════════════════════════════
+function openDetail(id) {
+  const t = state.tickets.find(x=>x.id===id);
+  if (!t) return;
+  state.viewingTicketId = id;
+  const sec = state.sections.find(s=>s.id===t.sectionId);
+  const dp = document.getElementById('detailPanel');
+  document.getElementById('dpTitle').textContent = t.title;
+  const secOptions = state.sections.map(s=>`<option value="${s.id}"${s.id===t.sectionId?' selected':''}>${esc(s.name)}</option>`).join('');
+  document.getElementById('dpBody').innerHTML = `
+    <div class="dp-section">
+      <div class="dp-section-title">Move to Section</div>
+      <select class="dp-select" id="dpSectionSel">${secOptions}</select>
+    </div>
+    <div class="dp-section">
+      <div class="dp-section-title">Client Info</div>
+      <div class="dp-row"><span class="lbl">Name</span><span class="val">${esc(t.clientName)}</span></div>
+      <div class="dp-row"><span class="lbl">Company</span><span class="val">${esc(t.company)}</span></div>
+      <div class="dp-row"><span class="lbl">Email</span><span class="val">${esc(t.email)}</span></div>
+      <div class="dp-row"><span class="lbl">Phone</span><span class="val">${esc(t.phone)}</span></div>
+      <div class="dp-row"><span class="lbl">Location</span><span class="val">${esc(t.city)}, ${esc(t.country)}</span></div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-section-title">Ticket Info</div>
+      <div class="dp-row"><span class="lbl">Priority</span><span class="val"><span class="prio-badge prio-${t.priority.toLowerCase()}">${t.priority}</span></span></div>
+      <div class="dp-row"><span class="lbl">Status</span><span class="val" style="color:${sec?sec.color:'var(--cyan)'}">${sec?sec.name:'—'}</span></div>
+      <div class="dp-row"><span class="lbl">Date</span><span class="val">${t.dateRaised}</span></div>
+      <div class="dp-row"><span class="lbl">Coords</span><span class="val">${t.lat}, ${t.lng}</span></div>
+    </div>
+    <div class="dp-section">
+      <div class="dp-section-title">Description</div>
+      <div class="dp-desc">${esc(t.desc)||'No description provided.'}</div>
+    </div>`;
+  document.getElementById('dpSectionSel').addEventListener('change', e => {
+    const tkt = state.tickets.find(x=>x.id===state.viewingTicketId);
+    if (!tkt) return;
+    tkt.sectionId = e.target.value;
+    const doneSec = state.sections.find(s=>s.name.toLowerCase()==='done');
+    if (doneSec && e.target.value===doneSec.id && !tkt.doneDate) tkt.doneDate = today();
+    else if (doneSec && e.target.value!==doneSec.id) tkt.doneDate = null;
+    saveState(); renderBoard(); showToast('Section updated ✓');
+  });
+  dp.classList.add('open');
+}
+
+function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); state.viewingTicketId = null; }
+
+// ══════════════════════════════════════════
+//  TICKET MODAL
+// ══════════════════════════════════════════
+function openTicketModal(sectionId, editId) {
+  state.editingTicketId = editId || null;
+  const modal = document.getElementById('ticketModal');
+  const t = editId ? state.tickets.find(x=>x.id===editId) : null;
+  document.getElementById('modalTitle').textContent = editId ? 'Edit Ticket' : 'Add Ticket';
+  document.getElementById('fClientName').value = t?.clientName||'';
+  document.getElementById('fCompany').value = t?.company||'';
+  document.getElementById('fEmail').value = t?.email||'';
+  document.getElementById('fPhone').value = t?.phone||'';
+  document.getElementById('fTitle').value = t?.title||'';
+  document.getElementById('fDesc').value = t?.desc||'';
+  document.getElementById('fPriority').value = t?.priority||'Medium';
+  document.getElementById('fCity').value = t?.city||'';
+  document.getElementById('fCountry').value = t?.country||'';
+  document.getElementById('fLat').value = t?.lat||'';
+  document.getElementById('fLng').value = t?.lng||'';
+  const sel = document.getElementById('fSection');
+  sel.innerHTML = state.sections.map(s=>`<option value="${s.id}"${s.id===(t?.sectionId||sectionId)?' selected':''}>${esc(s.name)}</option>`).join('');
+  modal.classList.add('open');
+}
+
+function saveTicket() {
+  const title = document.getElementById('fTitle').value.trim();
+  const clientName = document.getElementById('fClientName').value.trim();
+  const company = document.getElementById('fCompany').value.trim();
+  if (!title||!clientName||!company) { showToast('⚠ Title, Client Name & Company required'); return; }
+  const secId = document.getElementById('fSection').value;
+  const doneSec = state.sections.find(s=>s.name.toLowerCase()==='done');
+  const isDoneSection = doneSec && secId === doneSec.id;
+  const data = {
+    clientName, company,
+    email: document.getElementById('fEmail').value.trim(),
+    phone: document.getElementById('fPhone').value.trim(),
+    title,
+    desc: document.getElementById('fDesc').value.trim(),
+    priority: document.getElementById('fPriority').value,
+    sectionId: secId,
+    city: document.getElementById('fCity').value.trim(),
+    country: document.getElementById('fCountry').value.trim(),
+    lat: parseFloat(document.getElementById('fLat').value)||null,
+    lng: parseFloat(document.getElementById('fLng').value)||null,
+  };
+  if (state.editingTicketId) {
+    const idx = state.tickets.findIndex(x=>x.id===state.editingTicketId);
+    if (idx>-1) {
+      data.id = state.editingTicketId;
+      data.dateRaised = state.tickets[idx].dateRaised;
+      data.doneDate = isDoneSection ? (state.tickets[idx].doneDate||today()) : null;
+      state.tickets[idx] = data;
+    }
+  } else {
+    data.id = genId();
+    data.dateRaised = today();
+    data.doneDate = isDoneSection ? today() : null;
+    state.tickets.push(data);
+  }
+  closeModal('ticketModal');
+  saveState(); renderBoard();
+  showToast(state.editingTicketId ? 'Ticket updated ✓' : 'Ticket added ✓');
+}
+
+// ══════════════════════════════════════════
+//  SECTION MODAL
+// ══════════════════════════════════════════
+let pickedColor = PALETTE[0];
+function buildColorGrid(gridId, customId, onPick) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  PALETTE.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.style.background = c;
+    sw.addEventListener('click', () => { grid.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected')); sw.classList.add('selected'); document.getElementById(customId).value = c; onPick(c); });
+    grid.appendChild(sw);
+  });
+  document.getElementById(customId).addEventListener('input', e => onPick(e.target.value));
+}
+
+function openSectionModal() {
+  pickedColor = PALETTE[Math.floor(Math.random()*PALETTE.length)];
+  document.getElementById('fSecName').value = '';
+  buildColorGrid('secColorGrid', 'customColorInput', c => pickedColor = c);
+  document.getElementById('customColorInput').value = pickedColor;
+  document.getElementById('sectionModal').classList.add('open');
+}
+
+function saveSection() {
+  const name = document.getElementById('fSecName').value.trim();
+  if (!name) { showToast('⚠ Section name required'); return; }
+  state.sections.push({ id: genId(), name, color: pickedColor });
+  closeModal('sectionModal');
+  saveState(); renderBoard();
+  showToast('Section created ✓');
+}
+
+// ══════════════════════════════════════════
+//  COLOR MODAL
+// ══════════════════════════════════════════
+let pickedColor2 = '#00d2ff';
+function openColorModal(secId) {
+  state.colorTargetId = secId;
+  const sec = state.sections.find(s=>s.id===secId);
+  pickedColor2 = sec?.color || '#00d2ff';
+  document.getElementById('customColorInput2').value = pickedColor2;
+  buildColorGrid('colorGrid', 'customColorInput2', c => pickedColor2 = c);
+  document.getElementById('colorModal').classList.add('open');
+}
+
+function saveColor() {
+  const sec = state.sections.find(s=>s.id===state.colorTargetId);
+  if (sec) sec.color = pickedColor2;
+  closeModal('colorModal');
+  saveState(); renderBoard();
+  showToast('Color updated ✓');
+}
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function esc(s) { if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ══════════════════════════════════════════
+//  CITY AUTOCOMPLETE
+// ══════════════════════════════════════════
+document.getElementById('fCity').addEventListener('input', function() {
+  const v = this.value.toLowerCase().trim();
+  const sug = document.getElementById('citySuggestions');
+  if (v.length < 2) { sug.classList.remove('show'); return; }
+  const matches = Object.keys(CITIES).filter(c => c.startsWith(v)).slice(0,8);
+  if (!matches.length) { sug.classList.remove('show'); return; }
+  sug.innerHTML = matches.map(c=>`<div class="city-sug-item" data-city="${c}">${c.replace(/\b\w/g,l=>l.toUpperCase())}</div>`).join('');
+  sug.classList.add('show');
+});
+document.getElementById('citySuggestions').addEventListener('click', e => {
+  const item = e.target.closest('.city-sug-item');
+  if (!item) return;
+  const key = item.dataset.city;
+  const [lat,lng] = CITIES[key];
+  document.getElementById('fCity').value = key.replace(/\b\w/g,l=>l.toUpperCase());
+  document.getElementById('fLat').value = lat;
+  document.getElementById('fLng').value = lng;
+  document.getElementById('citySuggestions').classList.remove('show');
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.city-wrap')) document.getElementById('citySuggestions').classList.remove('show');
+});
+
+// ══════════════════════════════════════════
+//  EVENT LISTENERS
+// ══════════════════════════════════════════
+document.getElementById('board').addEventListener('click', e => {
+  const addBtn = e.target.closest('[data-addto]');
+  if (addBtn) { openTicketModal(addBtn.dataset.addto); return; }
+  const delBtn = e.target.closest('[data-del]');
+  if (delBtn) {
+    const secId = delBtn.dataset.del;
+    const sec = state.sections.find(s=>s.id===secId);
+    const cnt = state.tickets.filter(t=>t.sectionId===secId).length;
+    if (cnt > 0 && !confirm(`Delete section "${sec?.name}"? It has ${cnt} ticket(s). They will also be deleted.`)) return;
+    if (cnt === 0 && !confirm(`Delete section "${sec?.name}"?`)) return;
+    state.tickets = state.tickets.filter(t=>t.sectionId!==secId);
+    state.sections = state.sections.filter(s=>s.id!==secId);
+    saveState(); renderBoard(); showToast('Section deleted');
+    return;
+  }
+  const colorBtn = e.target.closest('[data-color]');
+  if (colorBtn) { openColorModal(colorBtn.dataset.color); return; }
+});
+document.getElementById('board').addEventListener('change', e => {
+  const inp = e.target.closest('.col-title-input');
+  if (inp) {
+    const sec = state.sections.find(s=>s.id===inp.dataset.secid);
+    if (sec) { sec.name = inp.value; saveState(); renderBoard(); }
+  }
+});
+document.getElementById('btnNewSection').addEventListener('click', openSectionModal);
+document.getElementById('saveTicket').addEventListener('click', saveTicket);
+document.getElementById('saveSectionBtn').addEventListener('click', saveSection);
+document.getElementById('saveColorBtn').addEventListener('click', saveColor);
+document.getElementById('closeTicketModal').addEventListener('click', ()=>closeModal('ticketModal'));
+document.getElementById('cancelTicketModal').addEventListener('click', ()=>closeModal('ticketModal'));
+document.getElementById('closeSectionModal').addEventListener('click', ()=>closeModal('sectionModal'));
+document.getElementById('cancelSectionModal').addEventListener('click', ()=>closeModal('sectionModal'));
+document.getElementById('closeColorModal').addEventListener('click', ()=>closeModal('colorModal'));
+document.getElementById('cancelColorModal').addEventListener('click', ()=>closeModal('colorModal'));
+document.getElementById('dpClose').addEventListener('click', closeDetail);
+document.getElementById('dpDelete').addEventListener('click', () => {
+  if (!state.viewingTicketId || !confirm('Delete this ticket?')) return;
+  state.tickets = state.tickets.filter(t=>t.id!==state.viewingTicketId);
+  closeDetail(); saveState(); renderBoard(); showToast('Ticket deleted');
+});
+document.getElementById('dpEdit').addEventListener('click', () => {
+  if (!state.viewingTicketId) return;
+  const t = state.tickets.find(x=>x.id===state.viewingTicketId);
+  openTicketModal(t?.sectionId, state.viewingTicketId);
+  closeDetail();
+});
+document.getElementById('searchBar').addEventListener('input', renderBoard);
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+loadState();
+renderBoard();
+initMap();
+updateMap();
+updateMapLegend();
+</script>
+</body>
+</html>
